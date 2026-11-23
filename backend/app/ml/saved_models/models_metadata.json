@@ -1,0 +1,104 @@
+{
+  "LogisticRegression": {
+    "algorithm": "LogisticRegression",
+    "version": "v1.0-logisticregression",
+    "precision": 0.7378,
+    "recall": 0.906,
+    "f1_score": 0.8133,
+    "roc_auc": 0.6657,
+    "pr_auc": 0.8157,
+    "brier_score": 0.1935,
+    "confusion_matrix": [
+      [
+        36,
+        113
+      ],
+      [
+        33,
+        318
+      ]
+    ],
+    "feature_importances": {
+      "nearby_verified_reports": 0.4794072167431173,
+      "stage_susceptibility": 0.4264651853899284,
+      "conducive_weather_index": 0.3810117347183437,
+      "humidity_avg_7d": 0.23506914260664036,
+      "historical_outbreak_count": 0.2217847545412298,
+      "cumulative_rainfall_7d": 0.2175373724208925,
+      "spatial_proximity_score": 0.18665037219807976,
+      "temp_avg_3d": 0.09237361079335779,
+      "humidity_avg_3d": 0.0814916396942973,
+      "temp_avg_7d": 0.0748944743354818,
+      "elevation_m": 0.0320275932871888
+    },
+    "model_filepath": "C:\\Sam's Work\\Crop_Disease\\backend\\app\\ml\\saved_models\\logisticregression_v1.joblib"
+  },
+  "RandomForest": {
+    "algorithm": "RandomForest",
+    "version": "v1.0-randomforest",
+    "precision": 0.722,
+    "recall": 0.9174,
+    "f1_score": 0.808,
+    "roc_auc": 0.6592,
+    "pr_auc": 0.8005,
+    "brier_score": 0.1982,
+    "confusion_matrix": [
+      [
+        25,
+        124
+      ],
+      [
+        29,
+        322
+      ]
+    ],
+    "feature_importances": {
+      "humidity_avg_3d": 0.12001625277749282,
+      "temp_avg_7d": 0.11957347655628935,
+      "conducive_weather_index": 0.11892750621384517,
+      "humidity_avg_7d": 0.11734558030577336,
+      "cumulative_rainfall_7d": 0.11568205907963032,
+      "temp_avg_3d": 0.10356129547271063,
+      "stage_susceptibility": 0.08548410895108988,
+      "elevation_m": 0.08075291169724495,
+      "spatial_proximity_score": 0.0643080969198597,
+      "nearby_verified_reports": 0.040511759269287,
+      "historical_outbreak_count": 0.03383695275677686
+    },
+    "model_filepath": "C:\\Sam's Work\\Crop_Disease\\backend\\app\\ml\\saved_models\\randomforest_v1.joblib"
+  },
+  "XGBoost": {
+    "algorithm": "XGBoost",
+    "version": "v1.0-xgboost",
+    "precision": 0.7327,
+    "recall": 0.8746,
+    "f1_score": 0.7974,
+    "roc_auc": 0.6656,
+    "pr_auc": 0.8085,
+    "brier_score": 0.2023,
+    "confusion_matrix": [
+      [
+        37,
+        112
+      ],
+      [
+        44,
+        307
+      ]
+    ],
+    "feature_importances": {
+      "stage_susceptibility": 0.1341378390789032,
+      "conducive_weather_index": 0.13014404475688934,
+      "nearby_verified_reports": 0.09981658309698105,
+      "humidity_avg_3d": 0.09823647886514664,
+      "spatial_proximity_score": 0.08706068247556686,
+      "historical_outbreak_count": 0.08237724751234055,
+      "temp_avg_7d": 0.0758376196026802,
+      "cumulative_rainfall_7d": 0.07452207803726196,
+      "temp_avg_3d": 0.07420078665018082,
+      "humidity_avg_7d": 0.07325097173452377,
+      "elevation_m": 0.07041573524475098
+    },
+    "model_filepath": "C:\\Sam's Work\\Crop_Disease\\backend\\app\\ml\\saved_models\\xgboost_v1.joblib"
+  }
+}

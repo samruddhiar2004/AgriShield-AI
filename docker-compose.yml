@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. PostgreSQL with PostGIS Spatial Engine
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: agrishield_postgis
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: agrishield_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d agrishield_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agrishield_net
+
+  # ----------------------------------------------------------------------------
+  # 2. Redis Message Broker & Cache
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: agrishield_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - agrishield_net
+
+  # ----------------------------------------------------------------------------
+  # 3. AgriShield AI — FastAPI Backend
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.backend
+    container_name: agrishield_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgrespassword@db:5432/agrishield_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=agrishield-enterprise-secret-key-2026-production
+      - OPEN_METEO_BASE_URL=https://api.open-meteo.com/v1
+      - ENVIRONMENT=production
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app/ml/saved_models:/app/backend/app/ml/saved_models
+    networks:
+      - agrishield_net
+
+  # ----------------------------------------------------------------------------
+  # 4. Celery Asynchronous & Scheduled Worker
+  # ----------------------------------------------------------------------------
+  celery_worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.backend
+    container_name: agrishield_celery_worker
+    restart: always
+    command: celery -A backend.app.celery_app.celery_app worker --loglevel=info
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgrespassword@db:5432/agrishield_db
+      - REDIS_URL=redis://redis:6379/0
+    networks:
+      - agrishield_net
+
+  # ----------------------------------------------------------------------------
+  # 5. React Vite Frontend with Nginx
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.frontend
+    container_name: agrishield_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "5173:80"
+    networks:
+      - agrishield_net
+
+networks:
+  agrishield_net:
+    driver: bridge
+
+volumes:
+  postgis_data:
+  redis_data:
