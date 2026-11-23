@@ -72,3 +72,4 @@ redis_data/
 .pytest_cache/
 *.log
 logs/
+push_to_github.py
